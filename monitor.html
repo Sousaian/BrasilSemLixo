@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Brasil Sem Lixo – Monitor de Coleta</title>
+  <style>
+    /* 1. RESET E VARIÁVEIS DE ESTILO
+    */
+    :root {
+      --cor-fundo: #f4f6f8;
+      --cor-verde: #27ae60;
+      --cor-azul: #2980b9;
+      --cor-texto: #333333;
+      --cor-borda: #dddddd;
+      --cor-card-bg: #ffffff;
+      
+      /* Cores por tipo de coleta */
+      --cor-comum: #7f8c8d; /* Cinza */
+      --cor-reciclavel: #27ae60; /* Verde */
+      --cor-especial: #e67e22; /* Laranja */
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: var(--cor-fundo);
+      color: var(--cor-texto);
+      /* Espaço extra para o header fixo */
+      padding-top: 70px;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* 2. HEADER E FOOTER 
+    */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background-color: var(--cor-verde);
+      color: white;
+      padding: 15px 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      z-index: 1000;
+      text-align: center;
+    }
+
+    footer {
+      background-color: var(--cor-azul);
+      color: white;
+      text-align: center;
+      padding: 15px;
+      margin-top: auto;
+    }
+
+    /* 3. ESTRUTURA PRINCIPAL E LAYOUT
+    */
+    main {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+      width: 100%;
+    }
+
+    .intro-section {
+      background-color: var(--cor-card-bg);
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      border-left: 5px solid var(--cor-azul);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .intro-section p {
+      line-height: 1.5;
+    }
+
+    /* 4. FORMULÁRIOS E FILTROS
+    */
+    .controls-section {
+      background-color: var(--cor-card-bg);
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .form-group {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+
+    .form-item {
+      flex: 1;
+      min-width: 200px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-item label {
+      font-weight: bold;
+      margin-bottom: 5px;
+      font-size: 0.9rem;
+    }
+
+    select {
+      padding: 10px;
+      border: 1px solid var(--cor-borda);
+      border-radius: 4px;
+      font-size: 1rem;
+      background-color: #fff;
+    }
+
+    .filters-group {
+      padding-top: 15px;
+      border-top: 1px solid var(--cor-borda);
+    }
+
+    .filters-group h4 {
+      margin-bottom: 10px;
+      font-size: 0.9rem;
+    }
+
+    .checkbox-container {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .checkbox-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+    }
+
+    /* 5. ÁREA DE RESULTADOS (CARDS)
+    */
+    .results-section {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background-color: var(--cor-card-bg);
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.08);
+      transition: transform 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--cor-borda);
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+
+    .card-body p {
+      margin-bottom: 8px;
+      font-size: 0.95rem;
+    }
+
+    .message {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 40px 20px;
+      background-color: var(--cor-card-bg);
+      border-radius: 8px;
+      color: #666;
+      border: 1px dashed var(--cor-borda);
+    }
+
+    /* Responsividade */
+    @media (max-width: 600px) {
+      .results-section {
+        grid-template-columns: 1fr; /* Cards ocupam 100% da largura */
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h2>Brasil Sem Lixo – Monitor de Coleta</h2>
+  </header>
+
+  <main>
+    <section class="intro-section">
+      <p><strong>Aviso:</strong> Este é um <em>protótipo educativo</em>. Os horários apresentados são fictícios e a ideia central é demonstrar como o Governo ou as Prefeituras poderiam disponibilizar essas informações de forma acessível à população.</p>
+    </section>
+
+    <section class="controls-section">
+      <div class="form-group">
+        <div class="form-item">
+          <label for="bairroSelect">Selecione o Bairro:</label>
+          <select id="bairroSelect">
+            <option value="">-- Escolha um bairro --</option>
+            </select>
+        </div>
+        <div class="form-item">
+          <label for="ruaSelect">Selecione a Rua:</label>
+          <select id="ruaSelect" disabled>
+            <option value="">-- Primeiro escolha um bairro --</option>
+            </select>
+        </div>
+      </div>
+
+      <div class="filters-group">
+        <h4>Filtrar por tipo de coleta:</h4>
+        <div class="checkbox-container">
+          <label class="checkbox-item">
+            <input type="checkbox" name="tipoFiltro" value="Lixo comum" checked>
+            🗑️ Lixo comum
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" name="tipoFiltro" value="Recicláveis" checked>
+            ♻️ Recicláveis
+          </label>
+          <label class="checkbox-item">
+            <input type="checkbox" name="tipoFiltro" value="Resíduos especiais" checked>
+            ⚠️ Resíduos especiais
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <section id="resultsArea" class="results-section">
+      <div class="message">
+        Selecione um bairro e uma rua para visualizar os horários de coleta.
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Protótipo acadêmico – Grupo: Ian Alves, Christopher, Mateus Almeida, Luiz, Kaiky, Raffael</p>
+  </footer>
+
+  <script>
+    /* ==========================================================================
+       1. DADOS MOCKADOS (Obrigatório)
+       Informações fictícias armazenadas diretamente no cliente, sem uso de API.
+       ========================================================================== */
+    const rotas = [
+      {
+        bairro: "Jardim Verde",
+        rua: "Rua das Flores",
+        coletas: [
+          { tipo: "Lixo comum", dias: ["Segunda", "Quinta"], horario: "08h–10h" },
+          { tipo: "Recicláveis", dias: ["Terça"], horario: "14h–16h" }
+        ]
+      },
+      {
+        bairro: "Centro",
+        rua: "Avenida Central",
+        coletas: [
+          { tipo: "Lixo comum", dias: ["Segunda", "Quarta", "Sexta"], horario: "07h–09h" },
+          { tipo: "Recicláveis", dias: ["Quinta"], horario: "15h–17h" },
+          { tipo: "Resíduos especiais", dias: ["Sábado"], horario: "09h–11h" }
+        ]
+      },
+      {
+        bairro: "Jardim Goiás",
+        rua: "Avenida Jamel Cecílio",
+        coletas: [
+          { tipo: "Lixo comum", dias: ["Terça", "Quinta", "Sábado"], horario: "19h–21h" },
+          { tipo: "Recicláveis", dias: ["Quarta"], horario: "08h–10h" }
+        ]
+      },
+      {
+        bairro: "Setor Bueno",
+        rua: "Avenida T-63",
+        coletas: [
+          { tipo: "Lixo comum", dias: ["Segunda", "Quarta", "Sexta"], horario: "20h–22h" },
+          { tipo: "Recicláveis", dias: ["Terça", "Quinta"], horario: "14h–16h" },
+          { tipo: "Resíduos especiais", dias: ["Sexta"], horario: "09h–12h" }
+        ]
+      }
+    ];
+
+    /* Configuração visual para cada tipo de coleta */
+    const configTipos = {
+      "Lixo comum": { cor: "var(--cor-comum)", icone: "🗑️" },
+      "Recicláveis": { cor: "var(--cor-reciclavel)", icone: "♻️" },
+      "Resíduos especiais": { cor: "var(--cor-especial)", icone: "⚠️" }
+    };
+
+    /* ==========================================================================
+       2. ELEMENTOS DO DOM
+       ========================================================================== */
+    const bairroSelect = document.getElementById("bairroSelect");
+    const ruaSelect = document.getElementById("ruaSelect");
+    const checkboxes = document.querySelectorAll('input[name="tipoFiltro"]');
+    const resultsArea = document.getElementById("resultsArea");
+
+    /* ==========================================================================
+       3. INICIALIZAÇÃO DOS CAMPOS DE SELEÇÃO
+       Extrai bairros únicos do array 'rotas' para popular o primeiro select.
+       ========================================================================== */
+    function inicializarFiltros() {
+      // Cria um Set (coleção de valores únicos) com os nomes dos bairros
+      const bairrosUnicos = [...new Set(rotas.map(rota => rota.bairro))].sort();
+      
+      bairrosUnicos.forEach(bairro => {
+        const option = document.createElement("option");
+        option.value = bairro;
+        option.textContent = bairro;
+        bairroSelect.appendChild(option);
+      });
+    }
+
+    /* Atualiza as ruas disponíveis sempre que o usuário muda o bairro */
+    bairroSelect.addEventListener("change", function() {
+      const bairroEscolhido = this.value;
+      
+      // Reseta e desabilita o select de ruas se nenhum bairro estiver escolhido
+      ruaSelect.innerHTML = '<option value="">-- Escolha a rua --</option>';
+      if (!bairroEscolhido) {
+        ruaSelect.disabled = true;
+        renderizarResultados();
+        return;
+      }
+
+      // Filtra as rotas pelo bairro escolhido e pega as ruas correspondentes
+      ruaSelect.disabled = false;
+      const rotasDoBairro = rotas.filter(rota => rota.bairro === bairroEscolhido);
+      
+      rotasDoBairro.forEach(rota => {
+        const option = document.createElement("option");
+        option.value = rota.rua;
+        option.textContent = rota.rua;
+        ruaSelect.appendChild(option);
+      });
+
+      renderizarResultados();
+    });
+
+    /* ==========================================================================
+       4. FILTRAGEM E RENDERIZAÇÃO DOS RESULTADOS
+       Esta função é disparada ao mudar a rua ou ao marcar/desmarcar checkboxes.
+       ========================================================================== */
+    function renderizarResultados() {
+      const bairroEscolhido = bairroSelect.value;
+      const ruaEscolhida = ruaSelect.value;
+
+      // Limpa os resultados atuais
+      resultsArea.innerHTML = "";
+
+      // Verifica se o usuário já selecionou tudo
+      if (!bairroEscolhido || !ruaEscolhida) {
+        resultsArea.innerHTML = `<div class="message">Selecione um bairro e uma rua para visualizar os horários de coleta.</div>`;
+        return;
+      }
+
+      // Procura a rota específica no mock de dados
+      const rotaEncontrada = rotas.find(r => r.bairro === bairroEscolhido && r.rua === ruaEscolhida);
+
+      // Tratamento para caso a rua não exista no mock (Requisito 3.6)
+      if (!rotaEncontrada) {
+        resultsArea.innerHTML = `<div class="message">Ainda não temos dados para essa rua. Este é um protótipo com informações fictícias.</div>`;
+        return;
+      }
+
+      // Descobre quais checkboxes estão marcados
+      const tiposAtivos = Array.from(checkboxes)
+                               .filter(cb => cb.checked)
+                               .map(cb => cb.value);
+
+      // Filtra os dados de coleta (dentro da rota encontrada) baseados nos checkboxes ativos
+      const coletasFiltradas = rotaEncontrada.coletas.filter(coleta => tiposAtivos.includes(coleta.tipo));
+
+      // Se filtrou tudo e não sobrou nada, avisa o usuário
+      if (coletasFiltradas.length === 0) {
+        resultsArea.innerHTML = `<div class="message">Nenhum tipo de coleta selecionado para exibição. Marque as opções acima.</div>`;
+        return;
+      }
+
+      // Cria os cards (Requisito 3.4) dinamicamente
+      coletasFiltradas.forEach(coleta => {
+        const config = configTipos[coleta.tipo];
+        
+        const card = document.createElement("div");
+        card.className = "card";
+        // Aplica a borda lateral com a cor correspondente ao tipo (Requisito 3.3)
+        card.style.borderLeft = `5px solid ${config.cor}`;
+
+        card.innerHTML = `
+          <div class="card-header" style="color: ${config.cor}">
+            <span style="font-size: 1.5rem">${config.icone}</span>
+            <span>${coleta.tipo}</span>
+          </div>
+          <div class="card-body">
+            <p><strong>Dias:</strong> ${coleta.dias.join(", ")}</p>
+            <p><strong>Horário:</strong> ${coleta.horario}</p>
+          </div>
+        `;
+        
+        resultsArea.appendChild(card);
+      });
+    }
+
+    // Adiciona os eventos para as interações
+    ruaSelect.addEventListener("change", renderizarResultados);
+    checkboxes.forEach(cb => cb.addEventListener("change", renderizarResultados));
+
+    // Roda a inicialização ao carregar a página
+    window.onload = inicializarFiltros;
+  </script>
+</body>
+</html>

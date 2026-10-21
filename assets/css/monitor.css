@@ -1,0 +1,191 @@
+/* 1. RESET E VARIÁVEIS DE ESTILO
+*/
+:root {
+  --cor-fundo: #f4f6f8;
+  --cor-verde: #27ae60;
+  --cor-azul: #2980b9;
+  --cor-texto: #333333;
+  --cor-borda: #dddddd;
+  --cor-card-bg: #ffffff;
+
+  /* Cores por tipo de coleta */
+  --cor-comum: #7f8c8d; /* Cinza */
+  --cor-reciclavel: #27ae60; /* Verde */
+  --cor-especial: #e67e22; /* Laranja */
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background-color: var(--cor-fundo);
+  color: var(--cor-texto);
+  /* Espaço extra para o header fixo */
+  padding-top: 70px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* 2. HEADER E FOOTER 
+*/
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: var(--cor-verde);
+  color: white;
+  padding: 15px 20px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  z-index: 1000;
+  text-align: center;
+}
+
+footer {
+  background-color: var(--cor-azul);
+  color: white;
+  text-align: center;
+  padding: 15px;
+  margin-top: auto;
+}
+
+/* 3. ESTRUTURA PRINCIPAL E LAYOUT
+*/
+main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+  width: 100%;
+}
+
+.intro-section {
+  background-color: var(--cor-card-bg);
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  border-left: 5px solid var(--cor-azul);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.intro-section p {
+  line-height: 1.5;
+}
+
+/* 4. FORMULÁRIOS E FILTROS
+*/
+.controls-section {
+  background-color: var(--cor-card-bg);
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.form-group {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+}
+
+.form-item {
+  flex: 1;
+  min-width: 200px;
+  display: flex;
+  flex-direction: column;
+}
+
+.form-item label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  font-size: 0.9rem;
+}
+
+select {
+  padding: 10px;
+  border: 1px solid var(--cor-borda);
+  border-radius: 4px;
+  font-size: 1rem;
+  background-color: #fff;
+}
+
+.filters-group {
+  padding-top: 15px;
+  border-top: 1px solid var(--cor-borda);
+}
+
+.filters-group h4 {
+  margin-bottom: 10px;
+  font-size: 0.9rem;
+}
+
+.checkbox-container {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.checkbox-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+}
+
+/* 5. ÁREA DE RESULTADOS (CARDS)
+*/
+.results-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  background-color: var(--cor-card-bg);
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.08);
+  transition: transform 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-3px);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--cor-borda);
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.card-body p {
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+}
+
+.message {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 40px 20px;
+  background-color: var(--cor-card-bg);
+  border-radius: 8px;
+  color: #666;
+  border: 1px dashed var(--cor-borda);
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+  .results-section {
+    grid-template-columns: 1fr; /* Cards ocupam 100% da largura */
+  }
+}
